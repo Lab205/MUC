@@ -2,11 +2,13 @@
  * File:   main.cpp
  * Author: user
  *
- * Created on 2015年4月30日, 下午4:47
+ * Created o 2015年4月30日, 下午4:47
  */
 
 #include <cstdlib>
 #include <stdio.h>
+
+#include "lib/minisat/core/Dimacs.h"
 
 using namespace std;
 

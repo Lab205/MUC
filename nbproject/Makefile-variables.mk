@@ -7,21 +7,21 @@ CND_BASEDIR=`pwd`
 CND_BUILDDIR=build
 CND_DISTDIR=dist
 # Debug configuration
-CND_PLATFORM_Debug=MinGW_TDM-Windows
-CND_ARTIFACT_DIR_Debug=dist/Debug/MinGW_TDM-Windows
+CND_PLATFORM_Debug=GNU-Linux-x86
+CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux-x86
 CND_ARTIFACT_NAME_Debug=muc
-CND_ARTIFACT_PATH_Debug=dist/Debug/MinGW_TDM-Windows/muc
-CND_PACKAGE_DIR_Debug=dist/Debug/MinGW_TDM-Windows/package
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/muc
+CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Debug=muc.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/MinGW_TDM-Windows/package/muc.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/muc.tar
 # Release configuration
-CND_PLATFORM_Release=MinGW_TDM-Windows
-CND_ARTIFACT_DIR_Release=dist/Release/MinGW_TDM-Windows
+CND_PLATFORM_Release=GNU-Linux-x86
+CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
 CND_ARTIFACT_NAME_Release=muc
-CND_ARTIFACT_PATH_Release=dist/Release/MinGW_TDM-Windows/muc
-CND_PACKAGE_DIR_Release=dist/Release/MinGW_TDM-Windows/package
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/muc
+CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=muc.tar
-CND_PACKAGE_PATH_Release=dist/Release/MinGW_TDM-Windows/package/muc.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/muc.tar
 #
 # include compiler specific variables
 #

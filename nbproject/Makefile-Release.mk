@@ -21,8 +21,8 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=MinGW_TDM-Windows
-CND_DLIB_EXT=dll
+CND_PLATFORM=GNU-Linux-x86
+CND_DLIB_EXT=so
 CND_CONF=Release
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -35,6 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/lib/minisat/core/Solver.o \
+	${OBJECTDIR}/lib/minisat/simp/SimpSolver.o \
+	${OBJECTDIR}/lib/minisat/utils/Options.o \
+	${OBJECTDIR}/lib/minisat/utils/System.o \
 	${OBJECTDIR}/main.o
 
 
@@ -56,11 +60,31 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc.exe
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc.exe: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/lib/minisat/core/Solver.o: lib/minisat/core/Solver.cc 
+	${MKDIR} -p ${OBJECTDIR}/lib/minisat/core
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/core/Solver.o lib/minisat/core/Solver.cc
+
+${OBJECTDIR}/lib/minisat/simp/SimpSolver.o: lib/minisat/simp/SimpSolver.cc 
+	${MKDIR} -p ${OBJECTDIR}/lib/minisat/simp
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/simp/SimpSolver.o lib/minisat/simp/SimpSolver.cc
+
+${OBJECTDIR}/lib/minisat/utils/Options.o: lib/minisat/utils/Options.cc 
+	${MKDIR} -p ${OBJECTDIR}/lib/minisat/utils
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/utils/Options.o lib/minisat/utils/Options.cc
+
+${OBJECTDIR}/lib/minisat/utils/System.o: lib/minisat/utils/System.cc 
+	${MKDIR} -p ${OBJECTDIR}/lib/minisat/utils
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/utils/System.o lib/minisat/utils/System.cc
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -73,7 +97,7 @@ ${OBJECTDIR}/main.o: main.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc.exe
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc
 
 # Subprojects
 .clean-subprojects:
