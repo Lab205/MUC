@@ -47,8 +47,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=
-CXXFLAGS=
+CCFLAGS=-std=c++11
+CXXFLAGS=-std=c++11
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -65,37 +65,37 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/muc ${OBJECTFILES} ${LDLIBSOPTIONS} -lz
 
 ${OBJECTDIR}/lib/minisat/core/Solver.o: lib/minisat/core/Solver.cc 
 	${MKDIR} -p ${OBJECTDIR}/lib/minisat/core
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/core/Solver.o lib/minisat/core/Solver.cc
+	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/core/Solver.o lib/minisat/core/Solver.cc
 
 ${OBJECTDIR}/lib/minisat/simp/SimpSolver.o: lib/minisat/simp/SimpSolver.cc 
 	${MKDIR} -p ${OBJECTDIR}/lib/minisat/simp
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/simp/SimpSolver.o lib/minisat/simp/SimpSolver.cc
+	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/simp/SimpSolver.o lib/minisat/simp/SimpSolver.cc
 
 ${OBJECTDIR}/lib/minisat/utils/Options.o: lib/minisat/utils/Options.cc 
 	${MKDIR} -p ${OBJECTDIR}/lib/minisat/utils
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/utils/Options.o lib/minisat/utils/Options.cc
+	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/utils/Options.o lib/minisat/utils/Options.cc
 
 ${OBJECTDIR}/lib/minisat/utils/System.o: lib/minisat/utils/System.cc 
 	${MKDIR} -p ${OBJECTDIR}/lib/minisat/utils
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/utils/System.o lib/minisat/utils/System.cc
+	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/minisat/utils/System.o lib/minisat/utils/System.cc
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/src/MUC.o: src/MUC.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/MUC.o src/MUC.cpp
+	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/MUC.o src/MUC.cpp
 
 # Subprojects
 .build-subprojects:

@@ -6,7 +6,7 @@
                    projectFiles="true">
       <itemPath>src/MUC.h</itemPath>
     </logicalFolder>
-    <logicalFolder name="f1" displayName="Library" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f1" displayName="Library" projectFiles="true">
       <logicalFolder name="minisat" displayName="minisat" projectFiles="true">
         <logicalFolder name="core" displayName="core" projectFiles="true">
           <itemPath>lib/minisat/core/Dimacs.h</itemPath>
@@ -74,6 +74,21 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <incDir>
+            <pElem>/usr/include/</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/</pElem>
+          </incDir>
+          <commandLine>-std=c++11</commandLine>
+          <useLinkerLibraries>false</useLinkerLibraries>
+        </ccTool>
+        <linkerTool>
+          <commandLine>-lz</commandLine>
+        </linkerTool>
       </compileType>
       <item path="lib/minisat/core/Dimacs.h" ex="false" tool="3" flavor2="0">
       </item>
