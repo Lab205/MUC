@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     //FILE* res = (argc >= 3) ? fopen(argv[2], "wb") : NULL;//--print the result into file..saffie
     bool result;
 //    result = m.solve(argv[1]);
-    result = m.solve("test.cnf");
+    result = m.solve("bitops0.cnf");
     if(result == true){
         printf("sat\n");
     }

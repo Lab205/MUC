@@ -1,12 +1,12 @@
 /* 
- * File:   MUC.h
+ * File:   MUC_parser.h
  * Author: saffie
  *
- * Created on May 11, 2015, 4:33 PM
+ * Created on May 21, 2015, 4:30 PM
  */
 
-#ifndef MUC_H
-#define	MUC_H
+#ifndef MUC_PARSER_H
+#define	MUC_PARSER_H
 
 #include <stdio.h>
 #include <utility>
@@ -16,24 +16,9 @@
 #include "../lib/minisat/utils/System.h"
 #include "../lib/minisat/utils/Options.h"
 #include "../lib/minisat/core/Dimacs.h"
-//#include "MUC_parser.h"
 #include "../lib/minisat/simp/SimpSolver.h"
 typedef std::pair<int, int> item_type;
 typedef Minisat::vec<Minisat::Lit> data_type;
-//=================================================================================================
-//
-
-
-
-class MUC {
-public:
-    MUC();
-    MUC(const MUC& orig);
-    bool solve(const char* path);
-    bool minisolve(Minisat::SimpSolver& S);
-    std::vector<data_type *> data;
-    //Minisat::SimpSolver S
-    virtual ~MUC();
 
 template<class B, class Solver>
     void read_Clause(B& in, Solver& S, Minisat::vec<Minisat::Lit>& lits) {
@@ -81,23 +66,22 @@ template<class B, class Solver>
                 lits.copyTo(*copy);
                 S.addClause_(lits);
                 data.push_back(copy);
-                //delete copy;
             }
         }
         if (strictp && cnt != clauses)
             printf("PARSE ERROR! DIMACS header mismatch: wrong number of clauses\n");
 
-        printf("%d:: \n", data.size());
-        for (int i = 0; i < data.size(); i++) {
-            data_type *lits = data[i];
-            printf("%d %d %d: ", i , lits, lits->size());
-            for (int j = 0; j < lits->size(); j++) {
-                //printf("test");
-                Minisat::Lit lit = (*lits)[j];
-                printf("%d ", lit.x);
-            }
-            printf("\n");
-        }
+//        printf("%d:: \n", data.size());
+//        for (int i = 0; i < data.size(); i++) {
+//            data_type *lits = data[i];
+//            printf("%d %d %d: ", i , lits, lits->size());
+//            for (int j = 0; j < lits->size(); j++) {
+//                //printf("test");
+//                Minisat::Lit lit = (*lits)[j];
+//                printf("%d ", lit.x);
+//            }
+//            printf("\n");
+//        }
 
 
 //        for (int i = 0; i < data.size(); i++) {
@@ -118,15 +102,6 @@ template<class B, class Solver>
         //return data; 
     }
 
-private:
-    std::vector<item_type> L; //L is a list in which each element is a set of clauses.
 
-    int L_count;
-
-    std::vector<item_type> M;//M is a minimal unsat core.
-    int M_count;
-
-};
-
-#endif	/* MUC_H */
+#endif	/* MUC_PARSER_H */
 
