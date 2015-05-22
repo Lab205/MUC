@@ -26,25 +26,9 @@ using namespace std;
 static Minisat::Solver* solver;
 int main(int argc, char** argv) {
     
-//    path;
-//    MUC muc(path);
-//    muc.solve();
-    
-    MUC m;
-    if (argc == 1)
-        printf("Reading from standard input... Use '--help' for help.\n");
-    
-    //FILE* res = (argc >= 3) ? fopen(argv[2], "wb") : NULL;//--print the result into file..saffie
-    bool result;
-//    result = m.solve(argv[1]);
-    result = m.solve("bitops0.cnf");
-    if(result == true){
-        printf("sat\n");
-    }
-    else
-    {
-        printf("unsat\n");
-    }
+    MUC m("tests/c499.cnf");
+    m.solve();
+    m.print_data();
     return 0;
 }
 

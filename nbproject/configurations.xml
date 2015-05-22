@@ -5,7 +5,8 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>src/MUC.h</itemPath>
-      <itemPath>src/MUC_parser.h</itemPath>
+      <itemPath>src/MUCCommon.h</itemPath>
+      <itemPath>src/MUCParser.h</itemPath>
     </logicalFolder>
     <logicalFolder name="f1" displayName="Library" projectFiles="true">
       <logicalFolder name="minisat" displayName="minisat" projectFiles="true">
@@ -141,7 +142,9 @@
       </item>
       <item path="src/MUC.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/MUC_parser.h" ex="false" tool="3" flavor2="0">
+      <item path="src/MUCCommon.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/MUCParser.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -163,6 +166,9 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <commandLine>-lz</commandLine>
+        </linkerTool>
       </compileType>
       <item path="lib/minisat/core/Dimacs.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -214,7 +220,9 @@
       </item>
       <item path="src/MUC.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/MUC_parser.h" ex="false" tool="3" flavor2="0">
+      <item path="src/MUCCommon.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/MUCParser.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

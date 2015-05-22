@@ -7,9 +7,8 @@
 
 #include "MUC.h"
 #include <vector>
-#include <minisat/core/SolverTypes.h>
-typedef std::pair<int, int> item_type;
-typedef Minisat::vec<Minisat::Lit> data_type;
+#include <stdio.h>
+#include "MUCParser.h"
 
 MUC::MUC() {
 }
@@ -17,229 +16,165 @@ MUC::MUC() {
 MUC::MUC(const MUC& orig) {
 }
 
-bool MUC::solve(const char* path) {
+MUC::MUC(const char* path) {
+    // init
 
+    this->read_from_file(path);
+}
 
-    Minisat::SimpSolver S;
+MUC::~MUC() {
+    this->clear();
+}
+
+/**
+ * read from file
+ * @param path
+ */
+void MUC::read_from_file(const char* path) {
+    // TODO: clear
+    this->clear();
+
     gzFile in = gzopen(path, "rb");
     if (in == NULL)
         printf("ERROR! Could not open file: %s\n", path), exit(1);
 
-    parse(in, S, true); //--parse the input file..saffie
-    //Minisat::SimpSolver S1,S2;
-    //    for (int i = 0; i < data.size(); i++) {
-    //        data_type *item = data[i];
-    //        for (int j = 0; j < item->size(); j++) {
-    //            Minisat::Lit lit = (*item)[j];
-    //            printf("...%d.%d_", Minisat::sign(lit), lit.x);
-    //            while (lit.x >= S1.nVars()) S1.newVar();
-    //        }
-    //        printf("\n");
-    //        data_type copy;
-    //        item->copyTo(copy);
-    //        S1.addClause_(copy);
-    //    }
-    //  
-    bool result = minisolve(S);
-    if (result == true) {
-        printf("sat\n");
-    } else {
-        L_count = data.size();
-        M_count = 0;
-        printf("%d\n", L_count);
-        item_type item;
-        item = std::make_pair(0, L_count - 1); //The initial set of clauses C.
-        L.push_back(item); //Push back C to L;
-
-        //printf("%d,%d",L[0].first, L[0].second);
-        item_type P, P1, P2, test;
-        int P1_count, P2_count, CL;
-        bool res1, res2;
-        while (L.size()) {
-            printf("L.size:%d\n", L.size());
-            printf("M.size:%d\n", M.size());
-            P = L.back();
-            L.pop_back(); //P is the top element of L, and pop P from L;
-            if (P.first != P.second) {
-                float b = P.first;
-                float a = (P.second - b) / 2;
-                printf("a:%f\n", a);
-                P1 = std::make_pair(P.first, P.first + ceil(a) - 1);
-                P2 = std::make_pair(P1.second + 1, P.second);
+    Minisat::StreamBuffer buffer(in);
+    int vars = 0;
+    int clauses = 0;
+    int cnt = 0;
+    int i = 1;
+    for (;;) {
+        Minisat::skipWhitespace(buffer);
+        if (*buffer == EOF) break;
+        else if (*buffer == 'p') {
+            if (Minisat::eagerMatch(buffer, "p cnf")) {
+                vars = Minisat::parseInt(buffer);
+                clauses = Minisat::parseInt(buffer);
             } else {
-                P2 = P;
-                P1 = std::make_pair(-1, -1);
+                printf("PARSE ERROR! Unexpected char: %c\n", *buffer), exit(3);
             }
-            printf("P:%d,%d\n", P.first, P.second);
-            printf("P1:%d,%d\n", P1.first, P1.second);
-            printf("P2:%d,%d\n", P2.first, P2.second);
-
-            if (P1.first != -1) {
-                Minisat::SimpSolver S1;
-                P1_count = P1.second - P1.first + 1;
-                for (int i = P1.first; i <= P1.second; i++) {
-                    //printf("print---");
-                    data_type *item_data = data[i];
-                    //printf("item.size:%d\n", item_data->size());
-                    for (int j = 0; j < item_data->size(); j++) {
-                        Minisat::Lit lit = (*item_data)[j];
-                        // printf("x.%d_\n", lit.x);
-                        while (lit.x >= S1.nVars()) S1.newVar();
-                    }
-                    // printf("\n");
-                    data_type copy;
-                    item_data->copyTo(copy);
-                    S1.addClause_(copy);
-                }
-                for (int m = 0; m < M.size(); m++) {
-                    for (int i = M[m].first; i <= M[m].second; i++) {
-                        // printf("print---");
-                        data_type *item_data = data[i];
-                        // printf("item.size:%d\n", item_data->size());
-                        for (int j = 0; j < item_data->size(); j++) {
-                            Minisat::Lit lit = (*item_data)[j];
-                            //printf("x.%d_\n", lit.x);
-                            while (lit.x >= S1.nVars()) S1.newVar();
-                        }
-                        //printf("\n");
-                        data_type copy;
-                        item_data->copyTo(copy);
-                        S1.addClause_(copy);
-                    }
-                }
-                for (int n = 0; n < L.size(); n++) {
-                    for (int i = L[n].first; i <= L[n].second; i++) {
-                        // printf("print---");
-                        data_type *item_data = data[i];
-                        //printf("item.size:%d\n", item_data->size());
-                        for (int j = 0; j < item_data->size(); j++) {
-                            Minisat::Lit lit = (*item_data)[j];
-                            // printf("x.%d_\n", lit.x);
-                            while (lit.x >= S1.nVars()) S1.newVar();
-                        }
-                        //printf("\n");
-                        data_type copy;
-                        item_data->copyTo(copy);
-                        S1.addClause_(copy);
-                    }
-                }
-                res1 = minisolve(S1);
-                printf("res1:%d\n", res1);
-                if (!res1) {
-                    if (P1.first == P1.second) {
-                        M.push_back(P1);
-                        test = M.back();
-                        printf("test1:%d,%d\n", test.first, test.second);
-                        continue;
-                    } else {
-                        L.push_back(P1);
-                        continue;
-                    }
-                }
-            }
-            printf("-----------------\n");
-
-            if (P2.first != -1) {
-                Minisat::SimpSolver S2;
-                P2_count = P2.second - P2.first + 1;
-                for (int i = P2.first; i <= P2.second; i++) {
-                    data_type *item_data = data[i];
-                    for (int j = 0; j < item_data->size(); j++) {
-                        Minisat::Lit lit = (*item_data)[j];
-                        //printf("...%d.%d_", Minisat::sign(lit), lit.x);
-                        while (lit.x >= S2.nVars()) S2.newVar();
-                    }
-                    //printf("\n");
-                    data_type copy;
-                    item_data->copyTo(copy);
-                    S2.addClause_(copy);
-                }
-                for (int m = 0; m < M.size(); m++) {
-                    for (int i = M[m].first; i <= M[m].second; i++) {
-                        //printf("print---");
-                        data_type *item_data = data[i];
-                        //printf("item.size:%d\n", item_data->size());
-                        for (int j = 0; j < item_data->size(); j++) {
-                            Minisat::Lit lit = (*item_data)[j];
-                            //printf("x.%d_\n", lit.x);
-                            while (lit.x >= S2.nVars()) S2.newVar();
-                        }
-                        //printf("\n");
-                        data_type copy;
-                        item_data->copyTo(copy);
-                        S2.addClause_(copy);
-                    }
-                }
-                for (int n = 0; n < L.size(); n++) {
-                    for (int i = L[n].first; i <= L[n].second; i++) {
-                        // printf("print---");
-                        data_type *item_data = data[i];
-                        // printf("item.size:%d\n", item_data->size());
-                        for (int j = 0; j < item_data->size(); j++) {
-                            Minisat::Lit lit = (*item_data)[j];
-                            //printf("x.%d_\n", lit.x);
-                            while (lit.x >= S2.nVars()) S2.newVar();
-                        }
-                        // printf("\n");
-                        data_type copy;
-                        item_data->copyTo(copy);
-                        S2.addClause_(copy);
-                    }
-                }
-                res2 = minisolve(S2);
-                printf("res2:%d\n", res2);
-                if (!res2) {
-                    if (P2.first == P2.second) {
-                        M.push_back(P2);
-                        test = M.back();
-                        
-                        printf("test2:%d,%d\n", test.first, test.second);
-                        continue;
-                    } else {
-                        L.push_back(P2);
-                        continue;
-                    }
-                }
-            }
-
-            if (P1.first != -1) {
-                L.push_back(P1);
-            }
-            if (P2.first != -1) {
-                L.push_back(P2);
-            }
-            printf("========================\n");
+        } else if (*buffer == 'c' || *buffer == 'p')
+            Minisat::skipLine(buffer);
+        else {
+            cnt++;
+            data_type *lits = new data_type();
+            read_clause(buffer, lits);
+            data.push_back(lits);
         }
-
-
-        printf("-------------------M:----------------------------\n");
-        int num = M.size();
-        printf("M.size():%d\n",M.size());
-        for (int c = 0; c < num; c++) {
-            test = M.back();
-            printf("test:%d,%d\n", test.first, test.second);
-            M.pop_back();
-        }
-
-
-
-
-
     }
 
-    //bool result = false;
-    gzclose(in);
-    return result;
+    if (cnt != clauses)
+        printf("PARSE ERROR! DIMACS header mismatch: wrong number of clauses\n");
+}
+
+void MUC::solve() {
+    // algo...
+    item_type C = std::make_pair(0, data.size() - 1);
+    if (this->sat_check(C)) {
+        printf("sat\n");
+    } else {
+        L.push_back(C);
+        item_type P, P1, P2;
+        while (!L.empty()) {
+            P = L.back();
+            L.pop_back();
+            this->split(P, P1, P2);
+            if (minisolve(P1)) {
+                continue;
+            }
+            if (minisolve(P2)) {
+                continue;
+            }
+            if (!is_empty(P1)) {
+                L.push_back(P1);
+            }
+            if (!is_empty(P2)) {
+                L.push_back(P2);
+            }
+        }
+    }
 
 }
 
-bool MUC::minisolve(Minisat::SimpSolver& S) {
+void MUC::print_data() {
+    //    for (int i = 0; i < data.size(); ++i) {
+    //        data_type* lits = data[i];
+    //        for (int j = 0; j < lits->size(); ++j) {
+    //            char sign = Minisat::sign((*lits)[j]) ? '-' : '+';
+    //            printf("%c%d ", sign, Minisat::var((*lits)[j]));
+    //        }
+    //        printf("\n");
+    //    }
+
+    printf("-------------M--------------\n");
+    int num = M.size();
+    printf("M_size:%d\n", num);
+//    for (int a = 0; a < num; a++) {
+//        // printf("(%d,%d)\n",M[a].first, M[a].second);
+//        data_type *item = data[M[a].first];
+//        for (int i = 0; i < item->size(); i++) {
+//            char sign = Minisat::sign((*item)[i]) ? '-' : ' ';
+//            printf("%c%d ", sign, Minisat::var((*item)[i]) + 1);
+//        }
+//        printf("0\n");
+//    }
+}
+
+/**
+ * clear data
+ */
+void MUC::clear() {
+    for (int i = data.size() - 1; i >= 0; --i) {
+        delete data[i];
+    }
+
+    data.clear();
+    L.clear();
+    M.clear();
+}
+
+/**
+ * fun
+ * @param P
+ * @return 
+ */
+bool MUC::sat_check(item_type P) {
+    Minisat::SimpSolver S;
+    add_clause(P, S);
+    for (int m = 0; m < M.size(); m++) {
+        add_clause(M[m], S);
+    }
+    for (int n = 0; n < L.size(); n++) {
+        add_clause(L[n], S);
+    }
+    bool res = sat(S);
+    return res;
+}
+
+/**
+ * 
+ * @param clause
+ * @param S
+ */
+void MUC::add_clause(item_type clause, Minisat::SimpSolver& S) {
+    for (int i = clause.first; i <= clause.second; i++) {
+        // printf("print---");
+        data_type *item_data = data[i];
+        for (int j = 0; j < item_data->size(); j++) {
+            Minisat::Lit lit = (*item_data)[j];
+            while (lit.x >= S.nVars()) S.newVar();
+        }
+        data_type copy;
+        item_data->copyTo(copy);
+        S.addClause_(copy);
+    }
+}
+
+bool MUC::sat(Minisat::SimpSolver& S) {
 
     Minisat::BoolOption solve("MAIN", "solve", "Completely turn on/off solving after preprocessing.", true);
-    //Minisat::StringOption dimacs ("MAIN", "dimacs", "If given, stop after preprocessing and write the result to this file.");
     S.eliminate(true); //------execute the main algorithm..saffie
     if (!S.okay()) {
-        //printf("unsat okay\n");
         return false;
         exit(20);
     }
@@ -248,9 +183,6 @@ bool MUC::minisolve(Minisat::SimpSolver& S) {
         Minisat::vec<Minisat::Lit> dummy;
         ret = S.solveLimited(dummy);
     }
-    //if (dimacs && ret == Minisat::l_Undef)
-    //S.toDimacs((const char*)dimacs);
-    //printf(ret == Minisat::l_True ? "SATISFIABLE\n" : ret == Minisat::l_False ? "UNSATISFIABLE\n" : "INDETERMINATE\n");
     if (ret == Minisat::l_True) {
         return true;
     } else if (ret == Minisat::l_False) {
@@ -260,6 +192,35 @@ bool MUC::minisolve(Minisat::SimpSolver& S) {
     }
 }
 
-MUC::~MUC() {
+void MUC::split(item_type P, item_type& P1, item_type& P2) {
+    if (P.first != P.second) {
+        float b = P.first;
+        float a = (P.second - b) / 2;
+        P1 = std::make_pair(P.first, P.first + ceil(a) - 1);
+        P2 = std::make_pair(P1.second + 1, P.second);
+    } else {
+        P2 = P;
+        P1 = std::make_pair(-1, -1);
+    }
+}
+
+bool MUC::minisolve(item_type& P) {
+    if (!is_empty(P) && !sat_check(P)) {
+        if (is_atom(P)) {
+            M.push_back(P);
+            data_type *item = data[P.first];
+            printf("%d: ", P.first+2);
+            for (int i = 0; i < item->size(); i++) {
+                char sign = Minisat::sign((*item)[i]) ? '-' : ' ';
+                printf("%c%d ", sign, Minisat::var((*item)[i]) + 1);
+            }
+            printf("0\n");
+        } else {
+            L.push_back(P);
+        }
+        return true;
+        //continue;
+    }
+    return false;
 }
 

@@ -21,6 +21,13 @@ typedef std::pair<int, int> item_type;
 typedef Minisat::vec<Minisat::Lit> data_type;
 
 template<class B, class Solver>
+void read_clause(B& in, )
+
+
+
+
+
+template<class B, class Solver>
     void read_Clause(B& in, Solver& S, Minisat::vec<Minisat::Lit>& lits) {
         int parsed_lit, var;
         lits.clear();
