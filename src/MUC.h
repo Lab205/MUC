@@ -35,14 +35,14 @@ public:
     
 private:
     void clear();
-    bool sat_check(item_type P);
-    void add_clause(item_type clause, Minisat::SimpSolver& S);
+    bool sat_check(item_type& P);
+    void add_clause(item_type& clause, Minisat::SimpSolver& S);
     bool sat(Minisat::SimpSolver& S);
-    void split(item_type P, item_type& P1, item_type& P2);
+    void split(item_type& P, item_type& P1, item_type& P2);
     bool minisolve(item_type& P);
    
-    inline bool is_atom(item_type P) { return P.first == P.second;}
-    inline bool is_empty(item_type P) { return P.first == -1; }
+    inline bool is_atom(item_type& P) { return P.first == P.second;}
+    inline bool is_empty(item_type& P) { return P.first == -1; }
 
 };
 

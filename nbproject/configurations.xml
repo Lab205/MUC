@@ -7,6 +7,7 @@
       <itemPath>src/MUC.h</itemPath>
       <itemPath>src/MUCCommon.h</itemPath>
       <itemPath>src/MUCParser.h</itemPath>
+      <itemPath>src/Utility.h</itemPath>
     </logicalFolder>
     <logicalFolder name="f1" displayName="Library" projectFiles="true">
       <logicalFolder name="minisat" displayName="minisat" projectFiles="true">
@@ -146,6 +147,8 @@
       </item>
       <item path="src/MUCParser.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/Utility.h" ex="false" tool="3" flavor2="0">
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -223,6 +226,8 @@
       <item path="src/MUCCommon.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/MUCParser.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Utility.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

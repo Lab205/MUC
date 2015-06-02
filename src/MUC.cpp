@@ -6,9 +6,13 @@
  */
 
 #include "MUC.h"
+
 #include <vector>
 #include <stdio.h>
+#include <time.h>
+
 #include "MUCParser.h"
+#include "Utility.h"
 
 MUC::MUC() {
 }
@@ -68,6 +72,17 @@ void MUC::read_from_file(const char* path) {
 }
 
 void MUC::solve() {
+//
+//    for (int i = 1; i < 20; i++) {
+//        long int t = getCurrentTime();
+//        item_type C = std::make_pair(0, data.size() - i);
+//        this->sat_check(C);
+//        printf("....%ld\n----------------\n", getCurrentTime() - t);
+//    }
+//    return;
+
+
+
     // algo...
     item_type C = std::make_pair(0, data.size() - 1);
     if (this->sat_check(C)) {
@@ -75,16 +90,30 @@ void MUC::solve() {
     } else {
         L.push_back(C);
         item_type P, P1, P2;
+        long int timestamp = getCurrentTime();
+        long int bck = timestamp;
+        int count = 0;
         while (!L.empty()) {
+            count++;
+            long int time = getCurrentTime();
+//            printf("-------------------------\n loop:%d  timestamp:%ld spend:%d\n", count, (time - timestamp), time - bck);
+            bck = time;
+            //            printf("-------------------------\ntimestamp: %ld\n", getCurrentTime() % 10000);
             P = L.back();
             L.pop_back();
             this->split(P, P1, P2);
+//            printf("(%d, %d)\n", P.first, P.second);
+            //            printf("split timestamp: %ld\n", getCurrentTime() % 10000);
+//            printf("___________P1:\n");
             if (minisolve(P1)) {
                 continue;
             }
+//            printf("___________P2:\n");
+            //            printf("solve P1 timestamp: %ld\n", getCurrentTime() % 10000);
             if (minisolve(P2)) {
                 continue;
             }
+            //            printf("solve P2 timestamp: %ld\n", getCurrentTime() % 10000);
             if (!is_empty(P1)) {
                 L.push_back(P1);
             }
@@ -106,18 +135,19 @@ void MUC::print_data() {
     //        printf("\n");
     //    }
 
-    printf("-------------M--------------\n");
+    FILE* pFile = fopen("result.txt", "w");
     int num = M.size();
-    printf("M_size:%d\n", num);
-//    for (int a = 0; a < num; a++) {
-//        // printf("(%d,%d)\n",M[a].first, M[a].second);
-//        data_type *item = data[M[a].first];
-//        for (int i = 0; i < item->size(); i++) {
-//            char sign = Minisat::sign((*item)[i]) ? '-' : ' ';
-//            printf("%c%d ", sign, Minisat::var((*item)[i]) + 1);
-//        }
-//        printf("0\n");
-//    }
+    fprintf(pFile, "p cnf aa %d\n", num);
+    //printf("M_size:%d\n", num);
+    for (int a = num - 1; a >= 0; a--) {
+        // printf("(%d,%d)\n",M[a].first, M[a].second);
+        data_type *item = data[M[a].first];
+        for (int i = item->size() - 1; i >= 0; i--) {
+            char sign = Minisat::sign((*item)[i]) ? '-' : ' ';
+            fprintf(pFile, "%c%d ", sign, Minisat::var((*item)[i]) + 1);
+        }
+        fprintf(pFile, "0\n");
+    }
 }
 
 /**
@@ -138,16 +168,31 @@ void MUC::clear() {
  * @param P
  * @return 
  */
-bool MUC::sat_check(item_type P) {
+bool MUC::sat_check(item_type& P) {
+    //    printf("sat check timestamp: %ld\n", getCurrentTime() % 10000);
     Minisat::SimpSolver S;
+    int p_count = 0, m_count = 0, l_count = 0;
     add_clause(P, S);
+    if (!this->is_empty(P))
+        p_count += P.second - P.first + 1;
     for (int m = 0; m < M.size(); m++) {
         add_clause(M[m], S);
+        if (!this->is_empty(M[m]))
+            m_count += M[m].second - M[m].first + 1;
     }
     for (int n = 0; n < L.size(); n++) {
         add_clause(L[n], S);
+        if (!this->is_empty(L[n]))
+            l_count += L[n].second - L[n].first + 1;
     }
+//    printf(".........P-(%d) M-(%d & %d) L-(%d & %d) Sat size: %d\n", p_count,
+//            M.size(), m_count,
+//            L.size(), l_count,
+//            p_count + l_count + m_count);
+    //    printf("M.size: %d,  L.size: %d\n", M.size(), L.size());
+    //    printf("add clause timestamp: %ld\n", getCurrentTime() % 10000);
     bool res = sat(S);
+    //    printf("sat timestamp: %ld\n", getCurrentTime() % 10000);
     return res;
 }
 
@@ -156,7 +201,7 @@ bool MUC::sat_check(item_type P) {
  * @param clause
  * @param S
  */
-void MUC::add_clause(item_type clause, Minisat::SimpSolver& S) {
+void MUC::add_clause(item_type& clause, Minisat::SimpSolver& S) {
     for (int i = clause.first; i <= clause.second; i++) {
         // printf("print---");
         data_type *item_data = data[i];
@@ -171,18 +216,22 @@ void MUC::add_clause(item_type clause, Minisat::SimpSolver& S) {
 }
 
 bool MUC::sat(Minisat::SimpSolver& S) {
-
+//    printf("sat timestamp: %ld\n", getCurrentTime() % 10000);
     Minisat::BoolOption solve("MAIN", "solve", "Completely turn on/off solving after preprocessing.", true);
+//    printf("solve timestamp: %ld\n", getCurrentTime() % 10000);
     S.eliminate(true); //------execute the main algorithm..saffie
+//    printf("eliminate timestamp: %ld\n", getCurrentTime() % 10000);
     if (!S.okay()) {
         return false;
         exit(20);
     }
+//    printf("okay timestamp: %ld\n", getCurrentTime() % 10000);
     Minisat::lbool ret = Minisat::l_Undef;
     if (solve) {
         Minisat::vec<Minisat::Lit> dummy;
         ret = S.solveLimited(dummy);
     }
+//    printf("solveLimited timestamp: %ld\n", getCurrentTime() % 10000);
     if (ret == Minisat::l_True) {
         return true;
     } else if (ret == Minisat::l_False) {
@@ -192,7 +241,7 @@ bool MUC::sat(Minisat::SimpSolver& S) {
     }
 }
 
-void MUC::split(item_type P, item_type& P1, item_type& P2) {
+void MUC::split(item_type& P, item_type& P1, item_type& P2) {
     if (P.first != P.second) {
         float b = P.first;
         float a = (P.second - b) / 2;
@@ -208,13 +257,6 @@ bool MUC::minisolve(item_type& P) {
     if (!is_empty(P) && !sat_check(P)) {
         if (is_atom(P)) {
             M.push_back(P);
-            data_type *item = data[P.first];
-            printf("%d: ", P.first+2);
-            for (int i = 0; i < item->size(); i++) {
-                char sign = Minisat::sign((*item)[i]) ? '-' : ' ';
-                printf("%c%d ", sign, Minisat::var((*item)[i]) + 1);
-            }
-            printf("0\n");
         } else {
             L.push_back(P);
         }

@@ -26,7 +26,7 @@ using namespace std;
 static Minisat::Solver* solver;
 int main(int argc, char** argv) {
     
-    MUC m("tests/c499.cnf");
+    MUC m("tests/benchmarks/2pipe-trimmed.cnf");
     m.solve();
     m.print_data();
     return 0;
