@@ -126,14 +126,14 @@ void MUC::solve() {
 }
 
 void MUC::print_data() {
-    //    for (int i = 0; i < data.size(); ++i) {
-    //        data_type* lits = data[i];
-    //        for (int j = 0; j < lits->size(); ++j) {
-    //            char sign = Minisat::sign((*lits)[j]) ? '-' : '+';
-    //            printf("%c%d ", sign, Minisat::var((*lits)[j]));
-    //        }
-    //        printf("\n");
-    //    }
+//        for (int i = 0; i < data.size(); ++i) {
+//            data_type* lits = data[i];
+//            for (int j = 0; j < lits->size(); ++j) {
+//                char sign = Minisat::sign((*lits)[j]) ? '-' : '+';
+//                printf("%c%d ", sign, Minisat::var((*lits)[j]));
+//            }
+//            printf("\n");
+//        }
 
     FILE* pFile = fopen("result.txt", "w");
     int num = M.size();
@@ -144,9 +144,11 @@ void MUC::print_data() {
         data_type *item = data[M[a].first];
         for (int i = item->size() - 1; i >= 0; i--) {
             char sign = Minisat::sign((*item)[i]) ? '-' : ' ';
-            fprintf(pFile, "%c%d ", sign, Minisat::var((*item)[i]) + 1);
+            //fprintf(pFile, "%c%d ", sign, Minisat::var((*item)[i]) + 1);
+            printf( "%c%d ", sign, Minisat::var((*item)[i]) + 1);
         }
-        fprintf(pFile, "0\n");
+        //fprintf(pFile, "0\n");
+        printf("0\n");
     }
 }
 
@@ -191,7 +193,7 @@ bool MUC::sat_check(item_type& P) {
 //            p_count + l_count + m_count);
     //    printf("M.size: %d,  L.size: %d\n", M.size(), L.size());
     //    printf("add clause timestamp: %ld\n", getCurrentTime() % 10000);
-    bool res = sat(S);
+    bool res = sat(S);//
     //    printf("sat timestamp: %ld\n", getCurrentTime() % 10000);
     return res;
 }

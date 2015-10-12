@@ -23,10 +23,10 @@ using namespace std;
  * 
  */
 
-static Minisat::Solver* solver;
+//static Minisat::Solver* solver;
 int main(int argc, char** argv) {
     
-    MUC m("tests/benchmarks/2pipe-trimmed.cnf");
+    MUC m("test.cnf");
     m.solve();
     m.print_data();
     return 0;
